@@ -33,9 +33,8 @@ end
 
 Hr = 0;
 for j=1:(length(bins)-1),
-  ptmp =  sum(p(:,j));
+  ptmp = sum(p(:,j));
   if ptmp,
     Hr = Hr - ptmp * log2(ptmp);
   end
 end
-

@@ -4,7 +4,7 @@ function compare = gatherComparison(atfData, templates, varargin)
 % a cell's traces are included if it has traces matching each of the templates
 
 def.groupfield = 'cellid'; % the organizational unit, each cell must have all conditions listed under templates array in order to be included
-def.includeFilesInLegend = 0;
+def.includeFilenamesInLegend = 0;
 assignargs(def,varargin);
 
 % template describes fields that must match values in the datatable
@@ -15,7 +15,7 @@ groupids = unique({atfData.(groupfield)}); % typically each cell
 
 for g = 1:length(groupids)
     includeGroup = 1;
-    fromGroup = [];
+    fromGroup = []; % holds the matches to each template from this cell
     for ti = 1:length(templates) % grab one row for each template
         glist = atfData(strcmp(groupids{g}, {atfData.(groupfield)}));
         t = templates(ti);
@@ -52,12 +52,16 @@ for g = 1:length(groupids)
             compareData = [compareData; fromGroup];
             compareDataGroupNames{end+1} = groupids{g};
         end
-    end
     
-    if(includeFilenamesInLegend)
-        
+        if(includeFilenamesInLegend)
+            name = [groupids{g} ' ['];
+            for ti = 1:length(templates)
+                name = sprintf('%s %04d',name, fromGroup(ti).filenum);
+            end
+            name = [name ' ]'];
+            compareDataGroupNames{end} = name;
+        end
     end
-    
 end
 
 compare.data = compareData;

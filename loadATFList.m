@@ -1,16 +1,17 @@
 function atfs = loadATFList(fname)
 % takes in the ATF list CSV file with columns as below and converts it into a struct array
 
-colList = {'cellid', 'path', 'filenum', 'include', 'celltype', 'expressing', 'gAMPA', 'opsinState', 'currentInjType', 'freqMod'};
+colList = {'cellid', 'path', 'filenum', 'include', 'mousetype', 'celltype', 'expressing', 'gAMPA', 'opsinState', 'currentInjType', 'freqMod'};
 out = [];
 
 if(~exist('fname','var'))
    [file path] = uigetfile({'*.csv', 'CSV File'}, ...
         'Choose the ATF Log File to Load');
     if isequal(file,0) || isequal(path,0)
-       return % canceled
+        error('No CSV file chosen. Aborting.');
+        return % canceled
     end
-    fname = strcat(path,file);
+    fname = strcat(path,file)
 end
 
 fid = fopen(fname);

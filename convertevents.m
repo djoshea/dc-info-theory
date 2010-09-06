@@ -1,30 +1,36 @@
-function [z actualRates] = convertevents(x, ratebins, timebins)
-  % z(sweepno, timebinno) = ratebinid for number of events in this bin
-  % actualRates(sweepno, timebinno) = actual rate of events in this bin
-nsweeps = max(x(2,:));
-
-for i=1:nsweeps,
-  % first find EPSCs corresponding to this sweep
-  eventtimes = x(1, find(x(2,:) == i));
+function [rateBin rateHz] = convertevents(eventCountsBySweep, rateBinBoundsPerTimeBin, timebins)
+  % rateBin(sweepno, timebinno) = rate bin number for number of events in this bin
+  % rateHz(sweepno, timebinno) = actual rate of events in this bin
+  % timebins must be in seconds for Hz to be valid
   
-  % next count the number of EPSCs in each time bin
-  for t=2:length(timebins),
-    y = sum(eventtimes > timebins(t-1) & eventtimes <= ...
-		   timebins(t));
+nsweeps = length(eventCountsBySweep);
+rateHz = zeros(nsweeps, length(timebins)-1);
+rateBin = zeros(nsweeps, length(timebins)-1);
+
+for iSweep=1:nsweeps,
+  % first find EPSCs corresponding to this sweep
+  eventtimes = eventCountsBySweep{iSweep};
+ 
+  for iTimeBin=2:length(timebins),
+    % next count the number of events in this timebin
+    eventsInThisBin = sum(eventtimes >= timebins(iTimeBin-1) & eventtimes < timebins(iTimeBin));
+    
     % next convert rates to symbols using the ratebins
-    z(i,t-1) = -1;
-    for j=2:length(ratebins),
-      if y >= ratebins(j-1) & y < ratebins(j),
-	z(i,t-1) = j-2;
-	break;
-      end
+    rateBin(iSweep,iTimeBin-1) = -1;
+    for iRateBin=2:length(rateBinBoundsPerTimeBin),
+        if(eventsInThisBin >= rateBinBoundsPerTimeBin(iRateBin-1) && eventsInThisBin < rateBinBoundsPerTimeBin(iRateBin))
+            rateBin(iSweep,iTimeBin-1) = iRateBin-1;
+            break;
+        end
     end
-    if y >= ratebins(length(ratebins)),
-      z(i,t-1) = length(ratebins)-1;
+    if eventsInThisBin >= rateBinBoundsPerTimeBin(length(rateBinBoundsPerTimeBin))
+        % more than the maximal bin, throw it away
+        rateBin(iSweep,iTimeBin-1) = NaN;
     end
     
-    actualRates(i, t-1) = y / (timebins(t) - timebins(t-1)) * 1000;
+    rateHz(iSweep, iTimeBin-1) = eventsInThisBin / (timebins(iTimeBin) - timebins(iTimeBin-1));
   end
 end
+
 
   

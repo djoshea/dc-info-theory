@@ -7,11 +7,11 @@ def.tBinOffset = 0.1; % sec, no inputs during the first 100 ms post trigger
 def.tBinMax = 10.1;
 def.tBinWidth = 0.125;
 def.inRateBinMin = -1e-5; % Hz, input rate (offset to include 0)
-def.inRateBinMax = 600;
-def.inRateBinWidth = 25;
+def.inRateBinMax = 500;
+def.inRateBinWidth = 500/10;
 def.outRateBinMin = -1e-5; % Hz, output rate
-def.outRateBinWidth = round(1/def.tBinWidth);
-% def.outRateBinWidth = 5;
+% minimum "meaningful" bin width, given time bin width, i.e. one spike separates each bin from its neighbors
+def.outRateBinWidth = floor(1/def.tBinWidth); 
 def.outRateBinMax = 85;
 
 def.plotIODist = 0;

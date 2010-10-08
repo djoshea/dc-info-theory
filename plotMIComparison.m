@@ -7,6 +7,7 @@ def.plotTitle = 'MI Comparison';
 def.useCorrected = 0;
 def.includeLegend = 1;
 def.rainbow = 1;
+def.cmap = 'hsv';
 assignargs(def,varargin);
 
 if(isempty(hfig))
@@ -16,20 +17,22 @@ end
 Ncells = size(data,1);
 Nconditions = size(data,2);
 
-figure(hfig), clf, set(hfig, 'Color', [1 1 1]);
-if(rainbow)
+if(strcmp(cmap, 'hsv'))
     cmap = hsv(Ncells);
-else
-    cmap = repmat([0 0 0], Ncells, 1);
 end
+
+if(size(cmap, 1) == 1)
+    cmap = repmat(cmap, Ncells, 1);
+end
+
+figure(hfig), set(hfig, 'Color', [1 1 1]);
 hold on
 
 for i = 1:Ncells
     if(useCorrected)
         miData = [data(i,:).miCorrected];
-        miData = [data(i,:).hResponseCorrected];
-        miData = [data(i,:).hNoiseCorrected];
-        
+%         miData = [data(i,:).hResponseCorrected];
+%         miData = [data(i,:).hNoiseCorrected];
     else
         miData = [data(i,:).mi];
     end

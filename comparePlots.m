@@ -1,11 +1,13 @@
+% function compare = comparePlots(atfFinal, varargin)
+
 % Baseline vs sSSFO comparison
 t = struct();
 t.include = 1;
 t.celltype = 'Pyramidal';
 % 
 t.mousetype = 'CaMKII-SSFO';
-t.expressing = 1;
-% 
+% t.expressing = 0;
+% % 
 % t.mousetype = 'DIO-SSFO';
 % t.expressing = 0;
 
@@ -45,6 +47,10 @@ templateNames{end+1} = 'sSFO';
 % templates(end+1) = t;
 % templateNames{end+1} = 'Depolarized';
 
+def.templates = templates;
+def.templateNames = templates;
+compareTitle = 'Comparison';
+
 compare = gatherComparison(atfFinal, templates, 'includeFilenamesInLegend', 1);
 
 % build comparison string
@@ -52,25 +58,32 @@ compareString = [templateNames{1}];
 for i = 2:length(templateNames)
     compareString = [compareString ' vs ' templateNames{i}];
 end
+compare.compareString = compareString;
 
 % build title for comparison
-ttl = sprintf('%s Cells, %d Hz Modulation', t.celltype, t.freqMod);
-if(isfield(t,'gAMPA'))
-    ttl = sprintf('%s, gAMPA = %d nS', ttl, t.gAMPA*3);
-end
+% ttl = sprintf('%s Cells, %d Hz Modulation', t.celltype, t.freqMod);
+% if(isfield(t,'gAMPA'))
+%     ttl = sprintf('%s, gAMPA = %d nS', ttl, t.gAMPA*3);
+% end
+ttl = compareTitle;
 
 if(isempty(compare.data))
     disp('No cells match this comparison');
     return
 end
 
-hfigMI = plotMIComparison(compare.data, templateNames, compare.groupNames, ...
-    'plotTitle', ['MI Comparison' ttl],'includeLegend', 1, 'rainbow', 1, 'useCorrected', 1);
-
-figure(hfigMI)
+% yellow = [1 0.86 0.25];
+% blue = [0 0 1];
+% 
+% figure(25), clf
+% hfigMI = plotMIComparison(compare.data, templateNames, compare.groupNames, ...
+%     'cmap', yellow, 'hfig', 25, 'plotTitle', ['MI Comparison' ttl],'includeLegend', 1, 'rainbow', 1, 'useCorrected', 1);
+% 
+% figure(hfigMI)
 % ylim([0 1.4]);
-% set(gcf, 'Position', [941   -70   367   619]);
-set(gca, 'YTick', 0:0.2:1.4);
+% % set(gcf, 'Position', [941   -70   367   619]);
+% set(gca, 'YTick', 0:0.2:1.4);
+% legend off
 
 % hfigIO = plotIOTransferComparison(compare.data, templateNames, compare.groupNames, ...
 %     'plotTitle', ['MI Comparison' ttl]);
@@ -86,8 +99,8 @@ Ncond = s(2);
 
 fieldname = 'mi';
 fieldname = 'miCorrected';
-fieldname = 'hResponseCorrected';
-fieldname = 'hNoiseCorrected';
+% fieldname = 'hResponseCorrected';
+% fieldname = 'hNoiseCorrected';
 
 MI = reshape([compare.data.(fieldname)], size(compare.data));
 
@@ -106,7 +119,7 @@ fprintf('Ppaired = %.4f\n',ppaired);
 [honesided, ponesided] = ttest(MIssfo - MIbase, 0, 0.1, 'left');
 fprintf('Ponesided = %.4f\n',ponesided);
 
-% return;
+return;
 
 %% Sample DC curve
 
@@ -116,7 +129,7 @@ fprintf('Ponesided = %.4f\n',ponesided);
 % cell 2 for CK-SSFO
 
 
-cdata = compare.data(4,:);
+cdata = compare.data(6,:);
 cname = compare.groupNames{1};
 
 cdataRebinned = processATFBinning(cdata, 'inRateBinMin', 0, 'inRateBinWidth', 50, 'inRateBinMax', 550);

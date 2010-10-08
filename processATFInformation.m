@@ -2,8 +2,8 @@ function atfData = processATFInformation( atfBinned, varargin )
 
 fprintf('Computing MI for %d files...\n', length(atfBinned));
 def.extrapolateMI = 1; % extrapolate out to the limit of infinite samples
-def.invDataFractions = (1:5)';
-def.nResample = 10;
+def.invDataFractions = (1:8)';
+def.nResample = 1000;
 def.showPlot = 1;
 assignargs(def, varargin);
 
@@ -13,7 +13,7 @@ atfData = atfBinned;
 
 for cm = 1:length(atfBinned)
     atf = atfBinned(cm);
-    cm
+    fprintf('\t Computing information for file %2d / %2d...\n', cm, length(atfBinned));
     % outcount is ntraces x ntimebins: the number of output spikes
     inRateBin = atf.inRateBin(:);
     outRateBin = atf.outRateBin(:);

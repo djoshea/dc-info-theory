@@ -9,11 +9,8 @@ load inputProtocols;
 atfTimes = processATFTimes(atfs, inputProtocols, 'overwriteSavedTimes', 0, 'saveTimesFile', 1, 'plotTraces', 0);
 
 %%
-atfBinned = processATFBinning(atfTimes);
+% atfBinned = processATFBinning(atfTimes);
+% 
+% atfFinal = processATFInformation(atfBinned);
 
-atfFinal = processATFInformation(atfBinned);
-
-
-
-
-%% Test timebin size
+% return
